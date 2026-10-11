@@ -7,18 +7,16 @@
   // spans: https://flueframework.com/docs/guide/observability/#cloudflare
   "observability": { "traces": { "enabled": true } },
   "ai": {
-    "binding": "AI",
+    "binding": "AI"
+  },
+  "vars": {
+    "OPENAI_BASE_URL": "https://openrouter.ai/api/v1"
   },
   // Every agent generates a Durable Object class named after its identity
   // (Hello -> FlueHelloAgent), and Cloudflare requires a migration entry
   // for each one. Append a new tag when you add an agent:
   // https://flueframework.com/docs/guide/cloudflare-target/#managing-migrations
   "migrations": [
-    { "tag": "v1", "new_sqlite_classes": ["FlueCustomerSupportAgent"] },
-    { "tag": "v2", "new_sqlite_classes": ["Sandbox"] },
-  ],
-  "durable_objects": {
-    "bindings": [{ "class_name": "Sandbox", "name": "Sandbox" }],
-  },
-  "containers": [{ "class_name": "Sandbox", "image": "./Dockerfile" }],
+    { "tag": "v1", "new_sqlite_classes": ["FlueCustomerSupportAgent"] }
+  ]
 }

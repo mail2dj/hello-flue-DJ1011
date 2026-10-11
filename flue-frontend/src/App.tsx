@@ -8,7 +8,7 @@ function App() {
   const client = useMemo(
     () =>
       createFlueClient({
-        url: "http://localhost:5173/agents/nicolas-2",
+        url: "http://localhost:5173/agents/doojnee",
         token: "TRUSTME",
       }),
     [],

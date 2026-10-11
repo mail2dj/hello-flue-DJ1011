@@ -1,17 +1,37 @@
 "use agent";
-import { getSandbox, type Sandbox as SandboxDO } from "@cloudflare/sandbox";
-import { env } from "cloudflare:workers";
-import { type AgentProps, useModel, useSandbox } from "@flue/runtime";
-import { cloudflareSandbox } from "@flue/runtime/cloudflare";
+import { bash, useModel, useSandbox } from "@flue/runtime";
+import { Bash, InMemoryFs } from "just-bash";
 
-interface Env {
-  Sandbox: DurableObjectNamespace<SandboxDO>;
-}
+const files = {
+  "/potatos/brief.md": `
+# Monthly sales report
 
-export function CustomerSupport({ id }: AgentProps) {
-  useModel("cloudflare/@cf/zai-org/glm-5.3");
-  const { Sandbox } = env as unknown as Env;
-  useSandbox(cloudflareSandbox(getSandbox(Sandbox, id)));
+Analyze the sales data.
+Calculate total revenue and revenue by product.
+Write the results to report.md.
+  `.trim(),
+  "/potatos/sales.csv": `
+product,revenue
+Keyboard,1200
+Monitor,2400
+Keyboard,800
+Mouse,600
+Monitor,1600
+  `.trim(),
+};
 
-  return `You are a helper agent that helps the user with files and accounting`;
+export function CustomerSupport() {
+  useModel("openrouter/deepseek/deepseek-chat");
+  useSandbox(
+    bash(
+      () =>
+        new Bash({
+          fs: new InMemoryFs(files),
+        }),
+    ),
+    {
+      cwd: "/potatos",
+    },
+  );
+  return `You are a helper agent that helps the user with files and accounting. Always respond in Korean, and never use Chinese.`;
 }
